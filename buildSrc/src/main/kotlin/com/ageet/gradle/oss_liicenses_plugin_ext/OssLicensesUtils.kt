@@ -3,6 +3,7 @@ package com.ageet.gradle.oss_liicenses_plugin_ext
 import com.google.gson.Gson
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
+import com.google.gson.reflect.TypeToken
 import java.io.File
 import java.io.RandomAccessFile
 
@@ -40,6 +41,12 @@ internal fun readAdditionalLicenses(files: List<File>): List<License> = files.fl
                 License(it.getAsJsonPrimitive("name").asString, File(depends.parent, it.getAsJsonPrimitive("file").asString).readText())
             }
 }
+
+internal fun readMappingBody(files: List<File>): Map<String, File> = files.flatMap { mapping ->
+    Gson().fromJson<Map<String, String>>(mapping.inputStream().reader(), TypeToken.getParameterized(Map::class.java, String::class.java, String::class.java).type)
+            .mapValues { File(mapping.parent, it.value) }
+            .toList()
+}.toMap()
 
 private fun RandomAccessFile.readString(start: Long, length: Int): String {
     seek(start)

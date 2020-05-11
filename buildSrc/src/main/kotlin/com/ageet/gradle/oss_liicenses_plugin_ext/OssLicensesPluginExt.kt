@@ -34,7 +34,7 @@ class OssLicensesPluginExt : Plugin<Project> {
                     }
                 }
             }
-            licenseTask.inputs.files(licenseTask.inputs.files + extension.additionalLicenses)
+            licenseTask.inputs.files(licenseTask.inputs.files + extension.additionalLicenses + extension.mappingBody)
             licenseTask.doLast {
                 customLicensesFile(licenseTask)
             }
@@ -49,7 +49,12 @@ class OssLicensesPluginExt : Plugin<Project> {
     }
 
     private fun customLicensesFile(licenseTask: LicensesTask) {
-        val licenses = readLicenses(licenseTask.licenses, licenseTask.licensesMetadata) + readAdditionalLicenses(extension.additionalLicenses)
+        val mappingBody = readMappingBody(extension.mappingBody)
+        val licenses = (readLicenses(licenseTask.licenses, licenseTask.licensesMetadata) + readAdditionalLicenses(extension.additionalLicenses))
+                .map { license ->
+                    val mappedBody = mappingBody[license.body]?.readText() ?: license.body
+                    License(license.name, mappedBody)
+                }
         writeLicenseMetadata(licenses, licenseTask.licensesMetadata)
         writeLicense(licenses, licenseTask.licenses)
     }
