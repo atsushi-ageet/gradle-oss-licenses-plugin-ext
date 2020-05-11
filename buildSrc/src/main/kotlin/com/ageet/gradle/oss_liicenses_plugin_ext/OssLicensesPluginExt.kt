@@ -38,6 +38,13 @@ class OssLicensesPluginExt : Plugin<Project> {
             licenseTask.doLast {
                 customLicensesFile(licenseTask)
             }
+
+            project.tasks.create("exportOssLicenses", ExportTask::class.java) {
+                it.dependsOn(licenseTask)
+                it.licensesFile = licenseTask.licenses
+                it.licensesMetadataFile = licenseTask.licensesMetadata
+                it.outputFile = project.rootProject.file("ossLicenses.json")
+            }
         }
     }
 

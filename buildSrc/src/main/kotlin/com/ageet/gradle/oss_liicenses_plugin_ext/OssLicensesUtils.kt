@@ -18,8 +18,9 @@ internal fun writeLicenseMetadata(licenses: List<License>, licenseMetadataFile: 
     var offset = 0
     licenseMetadataFile.printWriter().use { writer ->
         licenses.forEach {
-            writer.println("$offset:${it.bodySizeInBytes} ${it.name}")
-            offset += it.bodySizeInBytes + 1
+            val bodySizeInBytes = it.bodySizeInBytes
+            writer.println("$offset:${bodySizeInBytes} ${it.name}")
+            offset += bodySizeInBytes + 1
         }
     }
 }
