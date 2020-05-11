@@ -35,7 +35,7 @@ android {
 
 ossLicenses {
 //    skipDependenciesTask(true)
-    additionalLicenses(file("../licenses/depends.json"))
+    additionalLicenses(file("../licenses/additionalLicenses.json"))
     mappingBody(file("../licenses/mappingBody.json"))
 }
 
