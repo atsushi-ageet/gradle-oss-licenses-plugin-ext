@@ -1,6 +1,6 @@
 [
   {
     "name": "Additional License",
-    "file": "apache2.txt"
+    "path": "built-in:apache2"
   }
 ]

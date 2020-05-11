@@ -38,15 +38,30 @@ internal fun readAdditionalLicenses(files: List<File>): List<License> = files.fl
     Gson().fromJson(depends.inputStream().reader(), JsonArray::class.java)
             .mapNotNull { it as? JsonObject }
             .map {
-                License(it.getAsJsonPrimitive("name").asString, File(depends.parent, it.getAsJsonPrimitive("file").asString).readText())
+                License(it.getAsJsonPrimitive("name").asString, readLicenseByPath(depends.parent, it.getAsJsonPrimitive("path").asString))
             }
 }
 
-internal fun readMappingBody(files: List<File>): Map<String, File> = files.flatMap { mapping ->
+internal fun readMappingBody(files: List<File>): Map<String, String> = files.flatMap { mapping ->
     Gson().fromJson<Map<String, String>>(mapping.inputStream().reader(), TypeToken.getParameterized(Map::class.java, String::class.java, String::class.java).type)
-            .mapValues { File(mapping.parent, it.value) }
+            .mapValues { readLicenseByPath(mapping.parent, it.value) }
             .toList()
 }.toMap()
+
+private fun readLicenseByPath(baseDir: String, path: String): String {
+    val delimiterIndex = path.indexOf(':')
+    if (delimiterIndex == -1) {
+        throw Exception("Invalid path format")
+    }
+    val type = path.substring(0, delimiterIndex)
+    val value = path.substring(delimiterIndex + 1)
+    return when (type) {
+        "built-in" -> OssLicensesPluginExt::class.java.getResource(value).readText()
+        "file" -> File(baseDir, value).readText()
+        "text" -> value
+        else -> throw Exception("Unknown path type")
+    }
+}
 
 private fun RandomAccessFile.readString(start: Long, length: Int): String {
     seek(start)

@@ -52,7 +52,7 @@ class OssLicensesPluginExt : Plugin<Project> {
         val mappingBody = readMappingBody(extension.mappingBody)
         val licenses = (readLicenses(licenseTask.licenses, licenseTask.licensesMetadata) + readAdditionalLicenses(extension.additionalLicenses))
                 .map { license ->
-                    val mappedBody = mappingBody[license.body]?.readText() ?: license.body
+                    val mappedBody = mappingBody[license.body] ?: license.body
                     License(license.name, mappedBody)
                 }
         writeLicenseMetadata(licenses, licenseTask.licensesMetadata)
