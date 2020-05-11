@@ -34,7 +34,10 @@ class OssLicensesPluginExt : Plugin<Project> {
                     }
                 }
             }
-            licenseTask.inputs.files(licenseTask.inputs.files + extension.additionalLicenses + extension.mappingBody)
+            licenseTask.inputs.apply {
+                files(licenseTask.inputs.files + extension.additionalLicenses + extension.mappingBody)
+                property("exclude", extension.exclude)
+            }
             licenseTask.doLast {
                 customLicensesFile(licenseTask)
             }
@@ -50,7 +53,9 @@ class OssLicensesPluginExt : Plugin<Project> {
 
     private fun customLicensesFile(licenseTask: LicensesTask) {
         val mappingBody = readMappingBody(extension.mappingBody)
+        val exclude = extension.exclude.map { it.toRegex() }
         val licenses = (readLicenses(licenseTask.licenses, licenseTask.licensesMetadata) + readAdditionalLicenses(extension.additionalLicenses))
+                .filterNot { license -> exclude.any { it.containsMatchIn(license.name) } }
                 .map { license ->
                     val mappedBody = mappingBody[license.body] ?: license.body
                     License(license.name, mappedBody)

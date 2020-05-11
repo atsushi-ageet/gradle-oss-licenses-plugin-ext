@@ -5,6 +5,7 @@ import java.io.File
 open class OssLicensesExtension {
     internal var additionalLicenses: List<File> = emptyList()
     internal var mappingBody: List<File> = emptyList()
+    internal var exclude: List<String> = emptyList()
     internal var skipDependenciesTask: Boolean = false
 
     fun additionalLicenses(vararg files: File) {
@@ -13,6 +14,10 @@ open class OssLicensesExtension {
 
     fun mappingBody(vararg files: File) {
         mappingBody = files.toList()
+    }
+
+    fun exclude(vararg regex: String) {
+        exclude = regex.toList()
     }
 
     fun skipDependenciesTask(skip: Boolean) {
