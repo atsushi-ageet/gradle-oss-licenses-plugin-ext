@@ -1,5 +1,5 @@
 val artifactBaseName = "oss-licenses-plugin-ext"
-version = "0.10.1"
+version = "0.10.2"
 group = "com.ageet.oss-licenses-plugin-ext"
 
 plugins {
