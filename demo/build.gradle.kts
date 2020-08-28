@@ -37,7 +37,8 @@ ossLicenses {
 //    skipDependenciesTask(true)
     additionalLicenses(file("../licenses/additionalLicenses.json"))
     mappingBody(file("../licenses/mappingBody.json"))
-//    exclude("androidx", "google")
+    exclude("androidx.annotation:annotation")
+    excludeRegex("google")
 }
 
 dependencies {
