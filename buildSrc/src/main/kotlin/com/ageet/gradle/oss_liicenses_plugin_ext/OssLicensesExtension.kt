@@ -10,19 +10,19 @@ open class OssLicensesExtension {
     internal var skipDependenciesTask: Boolean = false
 
     fun additionalLicenses(vararg files: File) {
-        additionalLicenses = files.toList()
+        additionalLicenses = additionalLicenses + files.toList()
     }
 
     fun mappingBody(vararg files: File) {
-        mappingBody = files.toList()
+        mappingBody = mappingBody + files.toList()
     }
 
     fun exclude(vararg name: String) {
-        exclude = name.toList()
+        exclude = exclude + name.toList()
     }
 
     fun excludeRegex(vararg regex: String) {
-        excludeRegex = regex.map { it.toRegex() }
+        excludeRegex = excludeRegex + regex.map { it.toRegex() }
     }
 
     fun skipDependenciesTask(skip: Boolean) {
