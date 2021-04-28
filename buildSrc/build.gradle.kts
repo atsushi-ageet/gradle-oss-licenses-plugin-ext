@@ -1,5 +1,5 @@
 val artifactBaseName = "oss-licenses-plugin-ext"
-version = "0.10.2"
+version = "0.10.4"
 group = "com.ageet.oss-licenses-plugin-ext"
 
 plugins {
@@ -16,7 +16,7 @@ repositories {
 dependencies {
     implementation(kotlin("stdlib"))
     implementation("com.android.tools.build:gradle:4.1.3")
-    implementation("com.google.android.gms:oss-licenses-plugin:0.10.2")
+    implementation("com.google.android.gms:oss-licenses-plugin:0.10.4")
 }
 
 val sourcesJar by tasks.registering(Jar::class) {
