@@ -25,7 +25,6 @@ val sourcesJar by tasks.registering(Jar::class) {
 }
 
 gradlePlugin {
-    isAutomatedPublishing = false
     plugins {
         create("ossLicensesPluginExt") {
             id = project.group.toString()
@@ -34,12 +33,13 @@ gradlePlugin {
     }
 }
 
-publishing {
-    publications {
-        create<MavenPublication>("pluginMaven") {
-            artifactId = artifactBaseName
-            from(components["java"])
-            artifact(sourcesJar.get())
+afterEvaluate {
+    publishing {
+        publications {
+            getByName<MavenPublication>("pluginMaven") {
+                artifactId = artifactBaseName
+                artifact(sourcesJar.get())
+            }
         }
     }
 }
