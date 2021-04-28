@@ -5,7 +5,7 @@ group = "com.ageet.oss-licenses-plugin-ext"
 plugins {
     `java-gradle-plugin`
     `maven-publish`
-    kotlin("jvm") version "1.3.72"
+    kotlin("jvm") version "1.4.32"
 }
 
 repositories {
@@ -15,7 +15,7 @@ repositories {
 
 dependencies {
     implementation(kotlin("stdlib"))
-    implementation("com.android.tools.build:gradle:3.6.3")
+    implementation("com.android.tools.build:gradle:4.1.3")
     implementation("com.google.android.gms:oss-licenses-plugin:0.10.2")
 }
 
