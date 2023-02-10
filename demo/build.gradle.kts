@@ -11,11 +11,11 @@ plugins {
 
 android {
     namespace = "com.ageet.gradle.oss_liicenses_plugin_ext.demo"
-    compileSdk = 30
+    compileSdk = 33
 
     defaultConfig {
         minSdk = 21
-        targetSdk = 30
+        targetSdk = 33
 
         applicationId = "com.ageet.gradle.plugin.oss_licenses_ext.demo"
         versionCode = 1
@@ -33,6 +33,6 @@ ossLicenses {
 }
 
 dependencies {
-    implementation("androidx.appcompat:appcompat:1.2.0")
+    implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.gms:play-services-oss-licenses:17.0.0")
 }

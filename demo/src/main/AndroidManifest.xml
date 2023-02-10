@@ -6,6 +6,7 @@
         <activity
             android:name="com.google.android.gms.oss.licenses.OssLicensesMenuActivity"
             android:theme="@style/Theme.AppCompat.Light.DarkActionBar"
+            android:exported="true"
             tools:node="merge">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -15,6 +16,7 @@
         <activity
             android:name="com.google.android.gms.oss.licenses.OssLicensesActivity"
             android:theme="@style/Theme.AppCompat.Light.DarkActionBar"
+            android:exported="false"
             tools:node="merge" />
     </application>
 
