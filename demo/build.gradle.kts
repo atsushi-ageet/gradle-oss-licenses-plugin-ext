@@ -21,6 +21,12 @@ android {
         versionCode = 1
         versionName = "1.0"
     }
+
+    buildTypes {
+        getByName("release") {
+            signingConfig = signingConfigs.getByName("debug")
+        }
+    }
 }
 
 ossLicenses {
@@ -34,5 +40,6 @@ ossLicenses {
 
 dependencies {
     implementation("androidx.appcompat:appcompat:1.6.1")
+    implementation("com.google.code.gson:gson:2.8.9")
     implementation("com.google.android.gms:play-services-oss-licenses:17.0.0")
 }

@@ -1,10 +1,13 @@
 package com.ageet.gradle.oss_liicenses_plugin_ext
 
-import com.android.build.gradle.AppExtension
+import com.android.build.api.variant.AndroidComponentsExtension
+import com.android.build.api.variant.Variant
 import com.google.android.gms.oss.licenses.plugin.DependencyTask
 import com.google.android.gms.oss.licenses.plugin.LicensesTask
+import org.gradle.api.Action
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.Task
 import org.gradle.api.logging.Logging
 
 class OssLicensesPluginExt : Plugin<Project> {
@@ -14,39 +17,49 @@ class OssLicensesPluginExt : Plugin<Project> {
 
     override fun apply(project: Project) {
         extension = project.extensions.create("ossLicenses", OssLicensesExtension::class.java)
-        project.afterEvaluate {
-            val licenseTask = project.tasks.findByName("generateLicenses") as LicensesTask
-            if (extension.skipDependenciesTask) {
-                logger.quiet("skip dependencies task")
-                val dependenciesTask = project.tasks.findByName("getDependencies") as DependencyTask
-                dependenciesTask.isEnabled = false
-                project.tasks.create("generateEmptyDependencies") { task ->
-                    licenseTask.mustRunAfter(task)
-                    project.android.applicationVariants.forEach { variant ->
-                        variant.preBuildProvider.configure { it.dependsOn(task) }
-                    }
-                    task.outputs.apply {
-                        dir(dependenciesTask.outputDir)
-                        file(dependenciesTask.outputFile)
-                    }
-                    task.doLast {
-                        dependenciesTask.outputFile.writeText("[]")
-                    }
+        val androidComponents = project.extensions.getByType(AndroidComponentsExtension::class.java)
+        androidComponents.apply {
+            onVariants(selector().all(), { variant ->
+                configureVariantTasks(project, variant)
+            })
+        }
+    }
+
+    private fun configureVariantTasks(project: Project, variant: Variant) {
+        val licenseTask = project.tasks.findByName("${variant.name}OssLicensesTask") as LicensesTask
+        if (extension.skipDependenciesTask) {
+            val dependenciesTask = project.tasks.findByName("${variant.name}OssDependencyTask") as DependencyTask
+            logger.quiet("Skip ${dependenciesTask.name} task")
+            dependenciesTask.isEnabled = false
+            val generateFileTask = project.tasks.register("${variant.name}OssGenerateEmptyDependencies") { task ->
+                val outputFile = dependenciesTask.dependenciesJson.asFile.get()
+                val outputDir = outputFile.parentFile
+                task.outputs.apply {
+                    dir(outputDir)
+                    file(outputFile)
                 }
+                task.doLast(object : Action<Task> {
+                    override fun execute(t: Task) {
+                        outputFile.writeText("[]")
+                    }
+                })
             }
-            licenseTask.inputs.apply {
-                files(licenseTask.inputs.files + extension.additionalLicenses + extension.mappingBody)
-            }
-            licenseTask.doLast {
+            licenseTask.dependsOn(generateFileTask)
+        }
+        licenseTask.inputs.apply {
+            files(licenseTask.inputs.files + extension.additionalLicenses + extension.mappingBody)
+        }
+        licenseTask.doLast(object : Action<Task> {
+            override fun execute(t: Task) {
                 customLicensesFile(licenseTask)
             }
+        })
 
-            project.tasks.create("exportOssLicenses", ExportTask::class.java) {
-                it.dependsOn(licenseTask)
-                it.licensesFile = licenseTask.licenses
-                it.licensesMetadataFile = licenseTask.licensesMetadata
-                it.outputFile = project.rootProject.file("ossLicenses.json")
-            }
+        project.tasks.register("${variant.name}OssLicensesExport", ExportTask::class.java) {
+            it.dependsOn(licenseTask)
+            it.licensesFile = licenseTask.licenses
+            it.licensesMetadataFile = licenseTask.licensesMetadata
+            it.outputFile = project.rootProject.file("${variant.name}OssLicenses.json")
         }
     }
 
@@ -62,6 +75,4 @@ class OssLicensesPluginExt : Plugin<Project> {
         writeLicenseMetadata(licenses, licenseTask.licensesMetadata)
         writeLicense(licenses, licenseTask.licenses)
     }
-
-    private val Project.android: AppExtension get() = extensions.getByType(AppExtension::class.java)
 }
