@@ -6,6 +6,7 @@ plugins {
     `java-gradle-plugin`
     `maven-publish`
     kotlin("jvm") version "1.8.10"
+    id("com.gradle.plugin-publish") version "1.1.0"
 }
 
 repositories {
@@ -29,9 +30,17 @@ gradlePlugin {
     plugins {
         create("ossLicensesPluginExt") {
             id = project.group.toString()
+            displayName = "OSS Licenses Gradle Plugin Extension"
+            description = "Can customize the OSS license list."
             implementationClass = "com.ageet.gradle.oss_liicenses_plugin_ext.OssLicensesPluginExt"
         }
     }
+}
+
+pluginBundle {
+    website = "https://github.com/atsushi-ageet/gradle-oss-licenses-plugin-ext"
+    vcsUrl = "https://github.com/atsushi-ageet/gradle-oss-licenses-plugin-ext"
+    tags = listOf("android", "license")
 }
 
 afterEvaluate {
