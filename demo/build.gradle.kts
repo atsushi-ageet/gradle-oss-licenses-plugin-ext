@@ -1,14 +1,3 @@
-buildscript {
-    repositories {
-        google()
-        mavenCentral()
-    }
-    dependencies {
-        classpath("com.android.tools.build:gradle:4.1.3")
-        classpath("com.google.android.gms:oss-licenses-plugin:0.10.4")
-    }
-}
-
 repositories {
     google()
     mavenCentral()
@@ -21,11 +10,12 @@ plugins {
 }
 
 android {
-    compileSdkVersion(30)
+    namespace = "com.ageet.gradle.oss_liicenses_plugin_ext.demo"
+    compileSdk = 30
 
     defaultConfig {
-        minSdkVersion(21)
-        targetSdkVersion(30)
+        minSdk = 21
+        targetSdk = 30
 
         applicationId = "com.ageet.gradle.plugin.oss_licenses_ext.demo"
         versionCode = 1
