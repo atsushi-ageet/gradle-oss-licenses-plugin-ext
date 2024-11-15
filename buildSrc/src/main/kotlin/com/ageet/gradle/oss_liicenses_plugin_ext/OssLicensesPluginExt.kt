@@ -72,6 +72,7 @@ class OssLicensesPluginExt : Plugin<Project> {
                     val mappedBody = mappingBody[license.body] ?: license.body
                     License(license.name, mappedBody)
                 }
+                .distinct()
         writeLicenseMetadata(licenses, licenseTask.licensesMetadata)
         writeLicense(licenses, licenseTask.licenses)
     }
