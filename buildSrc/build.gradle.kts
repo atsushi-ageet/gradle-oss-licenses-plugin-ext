@@ -16,31 +16,23 @@ repositories {
 
 dependencies {
     implementation(kotlin("stdlib"))
-    implementation("com.android.tools.build:gradle:7.4.1")
+    implementation("com.android.tools.build:gradle:7.4.2")
     implementation("com.google.android.gms:oss-licenses-plugin:0.10.6")
     implementation("com.google.code.gson:gson:2.8.9")
 }
 
-val sourcesJar by tasks.registering(Jar::class) {
-    archiveClassifier.set("sources")
-    from(sourceSets.main.get().allSource)
-}
-
 gradlePlugin {
+    website.set("https://github.com/atsushi-ageet/gradle-oss-licenses-plugin-ext")
+    vcsUrl.set("https://github.com/atsushi-ageet/gradle-oss-licenses-plugin-ext")
     plugins {
         create("ossLicensesPluginExt") {
             id = project.group.toString()
             displayName = "OSS Licenses Gradle Plugin Extension"
             description = "Can customize the OSS license list."
             implementationClass = "com.ageet.gradle.oss_liicenses_plugin_ext.OssLicensesPluginExt"
+            tags.set(listOf("android", "license"))
         }
     }
-}
-
-pluginBundle {
-    website = "https://github.com/atsushi-ageet/gradle-oss-licenses-plugin-ext"
-    vcsUrl = "https://github.com/atsushi-ageet/gradle-oss-licenses-plugin-ext"
-    tags = listOf("android", "license")
 }
 
 afterEvaluate {
@@ -48,7 +40,6 @@ afterEvaluate {
         publications {
             getByName<MavenPublication>("pluginMaven") {
                 artifactId = artifactBaseName
-                artifact(sourcesJar.get())
             }
         }
     }
